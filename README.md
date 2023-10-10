@@ -1,5 +1,5 @@
 # Autenticacion-Django
-Este repositorio explica el uso del sistema de autenticación de Django
+Este repositorio explica el uso del sistema de autenticación de Django, mas especificamente el objeto User y nos limitares a explicar sus atributos.
 
 La autenticación de Django proporciona autenticación y autorización juntas y generalmente se la denomina sistema de autenticación, ya que estas características están de alguna manera acopladas.
 
@@ -37,9 +37,7 @@ El objeto User es una instancia de la clase User definida en el módulo django.c
 
       `#` is_authenticated:  Atributo de solo lectura que es siempre True(en contraposición a AnonymousUser.is_authenticated que es siempre False). Esta es una forma de saber             si el usuario ha sido autenticado. Esto no implica ningún permiso y no verifica si el usuario está activo o tiene una sesión válida. Aunque normalmente comprobará              este atributo request.user para saber si ha sido completado por AuthenticationMiddleware(que representa al usuario que ha iniciado sesión actualmente), debe saber               que este atributo es True para cualquier instancia de User.
             
-                is_anonymous¶
-            
-                    Atributo de sólo lectura que siempre es False. Esta es una forma de diferenciar objetos Usery AnonymousUserobjetos. Generalmente, debería preferir utilizar is_authenticatedeste atributo.
+       `# `is_anonymous:  Atributo de sólo lectura que siempre es False. Esta es una forma de diferenciar objetos Usery AnonymousUser. Generalmente, debería preferir utilizar             is_authenticated.
 
 
 
