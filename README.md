@@ -22,30 +22,19 @@ El objeto User es una instancia de la clase User definida en el módulo django.c
 
       - groups:  Relación de muchos a muchos con grupos.
 
-      - user_permissions:
+      - user_permissions:  Relación de muchos a muchos con permisos determinados. -
 
-    Relación de muchos a muchos conPermission
+      - is_staff: Designa si este usuario puede acceder al sitio de administración.
 
-is_staff¶
+      - is_active: Designa si esta cuenta de usuario debe considerarse activa. Le recomendamos que establezca esta bandera en False en lugar de eliminar cuentas; de esa                   manera, si sus aplicaciones tienen claves externas para los usuarios, las claves externas no se romperán. La razón detrás de esto es que, si tienes claves externas             que hacen referencia a la cuenta de usuario (por ejemplo, en otras tablas de tu base de datos), eliminar la cuenta podría romper esas claves externas y causar                  problemas en la integridad de los datos. Al marcar una cuenta como "desactivada", mantienes la integridad de las claves externas y evitas problemas de referencia.
 
-    Booleano. Designa si este usuario puede acceder al sitio de administración.
+           Supongamos que tienes un usuario llamado "Pepe22" que ha realizado varios comentarios en tu aplicación. Si decides eliminar la cuenta de "Pepe22" de forma                      permanente, esto podría causar problemas si la cuenta está relacionada con esos comentarios. La eliminación de la cuenta de "Pepe22" rompería las referencias de                clave externa en la tabla de comentarios, lo que podría generar errores o problemas de integridad en la base de datos.
 
-is_active¶
 
-    Booleano. Designa si esta cuenta de usuario debe considerarse activa. Le recomendamos que establezca esta bandera en Falseen lugar de eliminar cuentas; de esa manera, si sus aplicaciones tienen claves externas para los usuarios, las claves externas no se romperán.
+      - is_superuser: Designa que este usuario tiene todos los permisos sin asignarlos explícitamente.
 
-    Esto no controla necesariamente si el usuario puede iniciar sesión o no. Los servidores de autenticación no están obligados a verificar la is_activebandera, sino el servidor predeterminado ( ModelBackend) y RemoteUserBackendhacerlo. Puede utilizar AllowAllUsersModelBackendo AllowAllUsersRemoteUserBackendsi desea permitir que usuarios inactivos inicien sesión. En este caso, también querrás personalizar el AuthenticationFormutilizado por el LoginView, ya que rechaza a los usuarios inactivos. Tenga en cuenta que los métodos de verificación de permisos, como has_perm()la autenticación en el administrador de Django, regresan Falsepara los usuarios inactivos.
+      - last_login: Una fecha y hora del último inicio de sesión del usuario.
 
-is_superuser¶
-
-    Booleano. Designa que este usuario tiene todos los permisos sin asignarlos explícitamente.
-
-last_login¶
-
-    Una fecha y hora del último inicio de sesión del usuario.
-
-date_joined¶
-
-    Una fecha y hora que indica cuándo se creó la cuenta. Se establece en la fecha/hora actual de forma predeterminada cuando se crea la cuenta.
+      - date_joined: Una fecha y hora que indica cuándo se creó la cuenta. Se establece en la fecha/hora actual de forma predeterminada cuando se crea la cuenta.
 
     
