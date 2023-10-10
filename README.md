@@ -33,6 +33,17 @@ El objeto User es una instancia de la clase User definida en el módulo django.c
 
       - is_superuser: Designa que este usuario tiene todos los permisos sin asignarlos explícitamente.
 
+
+
+      `#` is_authenticated:  Atributo de solo lectura que es siempre True(en contraposición a AnonymousUser.is_authenticated que es siempre False). Esta es una forma de saber             si el usuario ha sido autenticado. Esto no implica ningún permiso y no verifica si el usuario está activo o tiene una sesión válida. Aunque normalmente comprobará              este atributo request.user para saber si ha sido completado por AuthenticationMiddleware(que representa al usuario que ha iniciado sesión actualmente), debe saber               que este atributo es True para cualquier instancia de User.
+            
+                is_anonymous¶
+            
+                    Atributo de sólo lectura que siempre es False. Esta es una forma de diferenciar objetos Usery AnonymousUserobjetos. Generalmente, debería preferir utilizar is_authenticatedeste atributo.
+
+
+
+
       - last_login: Una fecha y hora del último inicio de sesión del usuario.
 
       - date_joined: Una fecha y hora que indica cuándo se creó la cuenta. Se establece en la fecha/hora actual de forma predeterminada cuando se crea la cuenta.
