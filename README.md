@@ -81,6 +81,8 @@ La verificación de las credenciales, es decir, la comprobación de que el nombr
 
             from .django.contrib.auth.forms import AuthenticationForm 
 
+ - AuthenticationForm: hereda muchos de sus atributos y métodos de forms.Form, la clase base para la construcción de formularios en Django.
+
 
 
 
