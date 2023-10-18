@@ -81,11 +81,85 @@ La verificación de las credenciales, es decir, la comprobación de que el nombr
 
             from .django.contrib.auth.forms import AuthenticationForm 
 
- - AuthenticationForm: hereda muchos de sus atributos y métodos de forms.Form, la clase base para la construcción de formularios en Django.
+            - AuthenticationForm: hereda los atributos y métodos de forms.Form, la clase base para la construcción de formularios en Django.
+
+Ahora que hemos importado lo necesario para construir nuestra vista de autenticacion y cierre de sesion, veamos paso a paso como construirlo.
+
+                  # Importación de módulos necesarios
+                  from django.shortcuts import render, redirect  # Para renderizar plantillas y redireccionar
+                  from django.contrib.auth import login, logout  # Para gestionar la autenticación de usuarios
+                  from .forms import AuthenticationForm  # Importar un formulario personalizado
+
+                  # Aqui creamos la funcion para llamar a nuestra pagina principal 'home.html',a la cual nos redirigira nuestra pagina de inicio de sesion, una vez                               autenticado nuestro usuario
+                  def homeView(request):
+                      template = 'home.html'
+                      return render(request, template)
+                        
+                  # Seguidamente creamos nuestra funcion que mostrara nuestra pagina de inicio de sesion con el formulario correspondiente
+                  def loginView(request):
+                      template = 'login.html'
+
+                      # comprobamos en primer lugar si el metodo de solicitud es 'POST', en caso de ser afirmativo, nos quiere decir que estamos enviando datos a traves de                         los formularios existentes en dicha pagina
+                      if request.method == 'POST':
+                          # Aqui creamos una instancia de AuthenticationForm, pasandole como paramentros el request, y los datos enviados a traves de la solicitud POST
+                          # Esto a fin de que pueda verificar la solicutd realizada y los datos enviados en el mismo
+                          form = AuthenticationForm(request, data=request.POST)
+                          # Seguidamente verificamos con el metodo is_valid() heredado de forms.Form, el cual se encarga de corroborar que se han enviados datos y que los                              mismos no contienene ningun error, devolviendo un False o True
+                          if form.is_valid():
+                              # Auqui paso algo particular, el is_valid() no unicamente se limita a verificar si los campos de los formularios son validos, sino que tambien                                 verifica si el user y password existen en la base de datos, en tal caso lo podemos extraer de form.user_cache
+                              user = form.user_cache
+                              # luego iniciamos sesion con el usuario actual
+                              login(request, user)
+                              # finalmente nos redirige a la pagina principal
+                              return redirect('loginApp:home')
+                          else:
+                              # En el caso que los campos de formulario no sea valido en en el caso de que el usuario no se encuentre registrado, nos devuelve el formulario,                                pero en este caso con un error, que lo podemos ver en nuestra plantilla html con {{form.errors}}
+                              return render(request, template, {'form': form})
+
+
+                      # En el caso que la peticion no sea 'POST', nos envia la plantilla template y el formulario para que podamos iniciar sesion.
+                      form = AuthenticationUserForm()
+                      return render(request, template, {'form': form})
+
+Con esto ya es suficiente para crear una funcion para autenticar e iniciar sesion con un usuario, ahora bien, en el caso de que ya nos hemos verificado e iniciado sesion, y nos dirigamos por ejemplo en una nueva pestana del navegador sin haber cerrado sesion previamente, esto nos deberia autorizar a ingresar a la pagina principal sin necesidad de autenticarnos nuevamente gracias a login(), por lo tanto tendremos que verificar previamente en nuestra vista actualmente se encuentra abierta una seseion de usuario. 
+
+Para esta tarea utilizaremos un decorador llamado login_required(), el cual lo importamos de "from django.contrib.auth.decorators import login_required".
+
+                        # Este decorador se encarga de verificar existe una sesion abierta por un usuario, en caso de que no existe y se quiera acceder a la pagina principal                          esto lo redirige a la pagina de autenticacion de usuario, en caso contrario lo redirige a la pagina principal
+                        @login_required(login_url='loginApp:login')
+                        def homeView(request):
+                            template = 'home.html'
+                            return render(request, template)
+                        
+                        
+                        def loginView(request):
+                            template = 'login.html'
+
+                            # Para la pagina de login, utilizaremos el metodo .is_authenticated, que devuelve un True o False dependiendo si existe un usuario que haya                                     inciado seseion y se encuentra abierto actualmente, con este condicional en caso de True lo envia directamente a la pagina principal, para asi                               evitar volver a iniciar sesion
+                            if request.user.is_authenticated:
+                                return redirect('loginApp:home')
+                        
+                            if request.method == 'POST':
+                                form = AuthenticationUserForm(request, data=request.POST)
+                                if form.is_valid():
+                                    user = form.user_cache
+                                    login(request, user)
+                                    return redirect('loginApp:home')
+                                else:
+                                    return render(request, template, {'form': form})
+                        
+                            form = AuthenticationUserForm()
+                            return render(request, template, {'form': form})
 
 
 
+Finalmente, necesitamos cerrar la sesion, para ello crearemos una funcion nueva que se encargara de cerrar la sesion, una vez que nos situemos en la pagina principal. En este caso queda a eleccion de cada uno, de crear un boton que al pulsar llame a la funcion que crearemos en nuestra vista de cierre de sesion.
 
-            
+                        # Definición de la función para cerrar sesión
+                        def logOutView(request):
+                            # Cerrar la sesión del usuario
+                            logout(request)
+                            # Redirigir al usuario a la página de inicio de sesión
+                            return redirect('loginApp:login')
 
 
